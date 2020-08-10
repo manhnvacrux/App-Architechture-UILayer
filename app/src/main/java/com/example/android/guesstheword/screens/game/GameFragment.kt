@@ -62,27 +62,24 @@ class GameFragment : Fragment() {
             viewModel.onSkip()
         }
 
-        viewModel.score.observe(this, Observer {
-            newScore -> binding.scoreText.text = newScore.toString()
+        viewModel.score.observe(this, Observer { newScore ->
+            binding.scoreText.text = newScore.toString()
         })
 
-        viewModel.word.observe(this, Observer {
-            newWord -> binding.wordText.text = newWord
+        viewModel.word.observe(this, Observer { newWord ->
+            binding.wordText.text = newWord
 
+        })
+
+        viewModel.eventGameFinish.observe(this, Observer { isFinished ->
+            if (isFinished) {
+                val currentScore = viewModel.score.value ?: 0
+                val action = GameFragmentDirections.actionGameToScore(currentScore)
+                findNavController(this).navigate(action)
+                viewModel.onGameFinish()
+            }
         })
         return binding.root
 
     }
-
-
-    /**
-     * Called when the game is finished
-     */
-    private fun gameFinished() {
-        val action = GameFragmentDirections.actionGameToScore(viewModel.score.value ?: 0)
-        findNavController(this).navigate(action)
-    }
-
-
-
 }
